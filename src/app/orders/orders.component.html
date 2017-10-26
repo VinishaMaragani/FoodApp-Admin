@@ -1,0 +1,111 @@
+<div class="col-xs-12">
+	<div class="col-xs-9">
+		<button (click)="response=undefined;getTodaysOrders()" type="button" class="btn btn-primary">Today's Orders</button>
+		<button (click)="response=undefined;getOneWeekOrders()" type="button" class="btn btn-info">Last One Week Orders</button>
+		<button (click)="response=undefined;getOrders()" type="button" class="btn btn-warning">All Orders</button>
+	</div>
+</div>
+<div class="col-xs-12">
+	<div class="col-xs-6">
+	<div *ngIf="! response"><button class="btn btn-primary btn-lg"><i class="fa fa-spinner fa-spin"></i> Loading Orders ...  </button></div>
+		<table border="1" *ngIf="response && response.msg == ''" class="table table-bordered table-striped">
+			<tr>
+			<td>No.</td>
+				<td>Restaurant Name</td>
+				<td>Total  Amount</td>
+				<td>Ordered Time</td>
+				<td>Food Type</td>
+				<td>Order Status</td>
+				<td>More Info</td>
+				<td>Remain Time to Order</td>
+			</tr>
+			<tr *ngFor="let item of response.response; let i = index">
+				<td>{{i+1}}</td>
+				<td>{{item.orderInfos.restaurantName}}</td>
+				<td>{{item.orderInfos.totalAmount}}</td>
+				<td>{{item.orderInfos.orderedTime}}</td>
+				<td>{{item.orderInfos.foodType}}</td>
+				<td><select [ngModel]="item.orderStatus"
+					(change)="chngeOrderStatus(item._id,$event.target.value)" va>
+						<option value="ORDERPLACED" class="btn-secondary">Order Placed</option>
+						<option value="ORDERCONFORM" class="btn-primary">Order Conformed</option>
+						<option value="ORDERONTHEWAY" class="btn-info">Order on the way</option>
+						<option value="DELIVERED" class="btn-success">Delivered</option>
+						<option value="ORDERCANCLED" class="btn-danger">Order Cancled</option>
+				</select></td>
+
+				<td><a
+					(click)="userinfo = item.user; orderItems=item.orderInfos.items">More Info</a></td>	
+				<td><div [ngClass]="(item.orderRemainTimeInMin) <5 ? 'btn-danger': 'btn-success'" *ngIf="item.orderStatus != 'DELIVERED' &&  item.orderStatus != 'ORDERCANCLED'">{{item.orderRemainTimeInMin}} min</div></td>
+			</tr>
+		</table>
+		<div  *ngIf="response && response.msg != ''">
+		<h2>There are no orders till now...</h2>
+		</div>
+	</div>
+	<div class="col-xs-6" *ngIf="userinfo">
+		<div class="col-xs-12">
+			<h3>User Info</h3>
+			<div class="col-xs-4">
+				<label>name</label>
+				<p>{{userinfo.name}}</p>
+			</div>
+			<div class="col-xs-4">
+				<label>email</label>
+				<p>{{userinfo.email}}</p>
+			</div>
+			<div class="col-xs-4">
+				<label>phoneNumber</label>
+				<p>{{userinfo.phoneNumber}}</p>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<h3>User Address</h3>
+			<div class="col-xs-2">
+				<label>street</label>
+				<p>{{userinfo.address.street}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>location</label>
+				<p>{{userinfo.address.location}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>city</label>
+				<p>{{userinfo.address.city}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>pin</label>
+				<p>{{userinfo.address.pin}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>state</label>
+				<p>{{userinfo.address.state}}</p>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<h3>Items</h3>
+			<table border="1" class="col-xs-12 table">
+				<tr>
+					<td>Item Name</td>
+					<td>Type</td>
+					<td>Price</td>
+					<td>Total Price</td>
+					<td>Which Price Show</td>
+					<td>discount</td>
+					<td>Item Quantity</td>
+				</tr>
+
+				<tr *ngFor="let restitem of orderItems; let i = index">
+					<td>{{restitem.itemName}}</td>
+					<td>{{restitem.type}}</td>
+					<td>{{restitem.price}}</td>
+					<td>{{restitem.totalPrice}}</td>
+					<td>{{restitem.whichPriceShow}}</td>
+					<td>{{restitem.discount}}</td>
+					<td>{{restitem.itemQuantity}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+

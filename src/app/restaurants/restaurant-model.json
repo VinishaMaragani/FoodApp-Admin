@@ -1,0 +1,29 @@
+{
+  "address": {
+    "city": "string",
+    "location": "string",
+    "pin": 0,
+    "state": "string",
+    "street": "string"
+  },
+  "dliveryCharges": 0,
+  "dliveryTimeInMin": 0,
+  "items": [
+    {
+      "discount": 0,
+      "id": 0,
+      "itemLogo": "string",
+      "itemName": "string",
+      "price": 0,
+      "status": 0,
+      "totalPrice": 0,
+      "type": "string",
+      "whichPriceShow": "string"
+    }
+  ],
+  "name": "Raja Rest",
+  "rating": 0,
+  "restLogo": "string",
+  "status": 0,
+  "type": "string"
+}

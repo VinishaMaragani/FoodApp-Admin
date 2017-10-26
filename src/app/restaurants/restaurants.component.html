@@ -1,0 +1,317 @@
+<div class="col-xs-12">
+<div class="col-xs-3"><button 
+	(click)="showRestaurants = true;createRestaurants = false;getRestaurants()">List
+	of Restaurants</button> </div>
+<div class="col-xs-3"> <button
+	(click)="showRestaurants = false;createRestaurants = true;createinit()">Create
+	Restaurants</button></div>
+</div>
+<div class='divborder'>
+<div *ngIf="showRestaurants" class="col-xs-12">
+<div class="col-xs-6">
+<div *ngIf="! response"><button class="btn btn-primary btn-lg"><i class="fa fa-spinner fa-spin"></i> Loading Restaurants ...  </button></div>
+	<table border="1" *ngIf="response && response.msg == ''" class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>No.</td>
+			<td>Name</td>
+			<td>Logo</td>
+			<td>Type</td>
+			<td>Rating</td>
+			<td>Delevery Time</td>
+			<td>Delivery Charges</td>
+			<td>Status</td>
+			<td>Edit/Delete</td>
+		</tr></thead><tbody>
+		<tr *ngFor="let item of response.response; let i = index">
+			<td>{{i+1}}</td>
+			<td><a
+				(click)="restaddress = item.address; restItems=item.items;restId=item._id">{{item.name}}</a></td>
+			<td><img alt="{{item.name}}" src="{{item.restLogo}}" class="img-responsive"
+				height="70px" width="70px"></td>
+			<td>{{item.type}}</td>
+			<td>{{item.rating}}</td>
+			<td>{{item.dliveryTimeInMin}}</td>
+			<td>{{item.dliveryCharges}}</td>
+			<td>{{item.status}}
+				<div class="col-md-4">
+					<label class="toggle col-sm-8"> <input type="checkbox"
+						(click)="chngeStatus(item._id, item.status)?(item.status==1?item.status=0:item.status=1):''"
+						[checked]="item.status==1"> <span class="handle"></span>
+					</label>
+				</div>
+			</td>
+			<td><button type="button" class="btn btn-primary btn-sm" (click)="UpdateRestaurantForm(item)">Edit</button>
+			<button type="button" class="btn btn-danger btn-sm" (click)="deleteRestaurant(item._id)">Delete</button>
+			
+			</td>
+		</tr></tbody>
+	</table>
+	<div  *ngIf="response && response.msg != ''">
+		<h2>Restaurants are not inserted now</h2>
+		</div>
+	</div>
+	<div class="col-xs-6" *ngIf="restaddress">
+		<h2>Restaurant Details</h2>
+		<div class="col-xs-12">
+			<h3>Restaurant Address</h3>
+			<div class="col-xs-4">
+				<label>street</label>
+				<p>{{restaddress.street}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>location</label>
+				<p>{{restaddress.location}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>city</label>
+				<p>{{restaddress.city}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>pin</label>
+				<p>{{restaddress.pin}}</p>
+			</div>
+			<div class="col-xs-2">
+				<label>state</label>
+				<p>{{restaddress.state}}</p>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<h3>Items</h3>
+			<table border="1" class="col-xs-12 table">
+				<tr>
+					<td>Item Name</td>
+					<td>Logo</td>
+					<td>Type</td>
+					<td>Price</td>
+					<td>Total Price</td>
+					<td>Which Price Show</td>
+					<td>discount</td>
+					<td>Status</td>
+				</tr>
+
+				<tr *ngFor="let restitem of restItems; let i = index">
+					<td>{{restitem.itemName}}</td>
+					<td>
+					<img alt="{{restitem.itemName}}" src="{{restitem.itemLogo}}" class="img-responsive"
+				height="70px" width="70px">
+					</td>
+					<td>{{restitem.type}}</td>
+					<td>{{restitem.price}}</td>
+					<td>{{restitem.totalPrice}}</td>
+					<td>{{restitem.whichPriceShow}}</td>
+					<td>{{restitem.discount}}</td>
+					<td><input type="checkbox"
+						(click)="chngeItemStatus(restitem.id, restitem.status, restId)?(restitem.status==1?restitem.status=0:restitem.status=1):''"
+						[checked]="restitem.status==1">
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="createRestaurants" class="col-xs-12">
+	<h1>Create Restaurant</h1>
+	<form [formGroup]="restaurantForm" (ngSubmit)="isUpdate?updateRestaurant():createRestaurant()"
+		novalidate>
+		<div class="form-group col-xs-3">
+			<label>Resturant Name :</label><input type="text"
+				class="form-control" formControlName="name" /><br>
+			<div
+				*ngIf="restaurantForm.controls['name'].invalid && (restaurantForm.controls['name'].dirty || restaurantForm.controls['name'].touched)"
+				class="alert alert-danger">
+
+				<div *ngIf="restaurantForm.controls['name'].hasError('required')"
+					class="alert alert-danger">Name is required.</div>
+				<div *ngIf="restaurantForm.controls['name'].errors.maxlength">
+					Name max length 100 characters.</div>
+
+
+			</div>
+		</div>
+
+		<div class="form-group col-xs-4">
+			<label>Logo :</label><input type="text" class="form-control"
+				formControlName="restLogo" /><br>
+			<div
+				*ngIf="restaurantForm.controls['restLogo'].invalid && (restaurantForm.controls['restLogo'].dirty || restaurantForm.controls['restLogo'].touched)"
+				class="alert alert-danger">
+
+				<div
+					*ngIf="restaurantForm.controls['restLogo'].hasError('required')"
+					class="alert alert-danger">Logo is required.</div>
+				<div *ngIf="restaurantForm.controls['restLogo'].errors.maxlength">
+					Logo max length 500 characters.</div>
+
+
+			</div>
+		</div>
+
+		<div class="form-group col-xs-4">
+			<label>Type :</label><input type="text" class="form-control"
+				formControlName="type" /><br>
+			<div
+				*ngIf="restaurantForm.controls['type'].invalid && (restaurantForm.controls['type'].dirty || restaurantForm.controls['type'].touched)"
+				class="alert alert-danger">
+
+				<div *ngIf="restaurantForm.controls['type'].hasError('required')"
+					class="alert alert-danger">Type is required.</div>
+				<div *ngIf="restaurantForm.controls['type'].errors.maxlength">
+					Type max length 1 characters.</div>
+
+
+			</div>
+		</div>
+
+
+		<div class="form-group col-xs-4">
+			<label>Rating :</label><input type="text" class="form-control"
+				formControlName="rating" /><br>
+			<div
+				*ngIf="restaurantForm.controls['rating'].invalid && (restaurantForm.controls['rating'].dirty || restaurantForm.controls['rating'].touched)"
+				class="alert alert-danger">
+
+				<div *ngIf="restaurantForm.controls['rating'].hasError('required')"
+					class="alert alert-danger">Rating is required.</div>
+				<div *ngIf="restaurantForm.controls['rating'].errors.maxlength">
+					Rating max length 1 characters.</div>
+
+
+			</div>
+		</div>
+		<div class="form-group col-xs-4">
+			<label>dliveryCharges :</label><input type="text"
+				class="form-control" formControlName="dliveryCharges" /><br>
+			<div
+				*ngIf="restaurantForm.controls['dliveryCharges'].invalid && (restaurantForm.controls['dliveryCharges'].dirty || restaurantForm.controls['rating'].touched)"
+				class="alert alert-danger">
+
+				<div
+					*ngIf="restaurantForm.controls['dliveryCharges'].hasError('required')"
+					class="alert alert-danger">dliveryCharges is required.</div>
+				<div
+					*ngIf="restaurantForm.controls['dliveryCharges'].errors.maxlength">
+					dliveryCharges max length 1 characters.</div>
+
+
+			</div>
+		</div>
+		<div class="form-group col-xs-4">
+			<label>dliveryTimeInMin :</label><input type="text"
+				class="form-control" formControlName="dliveryTimeInMin" /><br>
+			<div
+				*ngIf="restaurantForm.controls['dliveryTimeInMin'].invalid && (restaurantForm.controls['dliveryTimeInMin'].dirty || restaurantForm.controls['rating'].touched)"
+				class="alert alert-danger">
+
+				<div
+					*ngIf="restaurantForm.controls['dliveryTimeInMin'].hasError('required')"
+					class="alert alert-danger">dliveryTimeInMin is required.</div>
+				<div
+					*ngIf="restaurantForm.controls['dliveryTimeInMin'].errors.maxlength">
+					dliveryTimeInMin max length 1 characters.</div>
+
+
+			</div>
+		</div>
+		<div class="panel-body" formGroupName="address">
+			<div class="form-group col-xs-4">
+				<label>Street Name</label> <input type="text" class="form-control"
+					formControlName="street"> <small
+					[hidden]="restaurantForm.controls['address'].controls.street.valid"
+					class="text-danger"> street is required </small>
+			</div>
+			<div class="form-group col-xs-4">
+				<label>location</label> <input type="text" class="form-control"
+					formControlName="location">
+			</div>
+
+
+			<div class="form-group col-xs-4">
+				<label>city</label> <input type="text" class="form-control"
+					formControlName="city"> <small
+					[hidden]="restaurantForm.controls['address'].controls.city.valid"
+					class="text-danger"> City is required </small>
+			</div>
+			<div class="form-group col-xs-4">
+				<label>Pin</label> <input type="text" class="form-control"
+					formControlName="pin">
+			</div>
+
+			<div class="form-group col-xs-4">
+				<label>State</label> <input type="text" class="form-control"
+					formControlName="state"> <small
+					[hidden]="restaurantForm.controls['address'].controls.state.valid"
+					class="text-danger"> State is required </small>
+			</div>
+
+		</div>
+		<div formArrayName="items">
+			<div
+				*ngFor="let item of restaurantForm.controls.items.controls; let i=index"
+				class="panel panel-default">
+				<div class="panel-heading">
+					<span>Items {{i + 1}}</span> <span
+						class="glyphicon glyphicon-remove pull-right"
+						*ngIf="restaurantForm.controls.items.controls.length > 1"
+						(click)="removeItem(i)"></span>
+				</div>
+				<div class="panel-body" [formGroupName]="i">
+					<div class="form-group col-xs-4">
+						<label>Item Name</label> <input type="text" class="form-control"
+							formControlName="itemName"> <small
+							[hidden]="restaurantForm.controls.items.controls[i].controls.itemName.valid"
+							class="text-danger"> Item Name is required </small>
+					</div>
+					<div class="form-group col-xs-4">
+						<label>Price</label> <input type="text" class="form-control"
+							formControlName="price">
+					</div>
+
+
+					<div class="form-group col-xs-4">
+						<label>Total Price</label> <input type="text" class="form-control"
+							formControlName="totalPrice"> <small
+							[hidden]="restaurantForm.controls.items.controls[i].controls.totalPrice.valid"
+							class="text-danger"> Total Price is required </small>
+					</div>
+					<div class="form-group col-xs-4">
+						<label>discount</label> <input type="text" class="form-control"
+							formControlName="discount">
+					</div>
+
+					<div class="form-group col-xs-4">
+						<label>Item Logo</label> <input type="text" class="form-control"
+							formControlName="itemLogo"> <small
+							[hidden]="restaurantForm.controls.items.controls[i].controls.itemLogo.valid"
+							class="text-danger"> Item Logo is required </small>
+					</div>
+					<div class="form-group col-xs-4">
+						<label>type</label> <input type="text" class="form-control"
+							formControlName="type">
+					</div>
+					<div class="form-group col-xs-4">
+						<label>whichPriceShow</label> <input type="text"
+							class="form-control" formControlName="whichPriceShow">
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+		<div class="margin-20">
+			<a (click)="addItem()" style="cursor: default"> Add another Item
+				+ </a>
+		</div>{{isUpdate}}
+			<div style="margin-bottom: 1em">
+				<button *ngIf="!isUpdate" type="submit"
+					[disabled]="restaurantForm.pristine" class="btn btn-success">Save</button>
+				<button *ngIf="isUpdate" type="submit"
+					[disabled]="restaurantForm.pristine" class="btn btn-success">Update</button>
+				&nbsp;
+				<button type="reset" (click)="revert()"
+					[disabled]="restaurantForm.pristine" class="btn btn-danger">Revert</button>
+			</div>
+		</form>
+</div></div>

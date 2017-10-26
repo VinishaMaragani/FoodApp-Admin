@@ -1,0 +1,14 @@
+.ribbon {
+	align-items: center;
+	position: relative;
+	width: 100%;
+	margin: 0px;
+	z-index: 2;
+	max-height: 85px;
+	-webkit-box-shadow: 0px 8px 8px -6px #9B9898;
+	-moz-box-shadow: 0px 8px 8px -6px #9B9898;
+	box-shadow: 0px 8px 8px -6px #9B9898;
+	height: 100%;
+	background-color: #FFA500;
+}
+

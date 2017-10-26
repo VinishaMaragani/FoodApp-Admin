@@ -1,0 +1,45 @@
+<div class="col-xs-12">
+	<div class="col-xs-9">
+		<button (click)="getUsers()">List of Users</button>
+	</div>
+</div>
+<div class="col-xs-12">
+	<div class="col-xs-6">
+	<div *ngIf="! response"><button class="btn btn-primary btn-lg"><i class="fa fa-spinner fa-spin"></i> Loading Users ...  </button></div>
+		<table border="1" *ngIf="response && response.msg == ''" class="table">
+			<tr class="thead">
+			<td>No.</td>
+				<td>Name</td>
+				<td>Email</td>
+				<td>Phone Number</td>
+				<td>Address</td>
+				<td>Street</td>
+				<td>Location</td>
+				<td>city</td>
+				<td>State</td>
+				<td>Pin</td>
+				<td>Delete</td>
+			</tr>
+			<tr *ngFor="let item of response.response; let i = index">
+				<td>{{i+1}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.email}}</td>
+				<td>{{item.phoneNumber}}</td>
+				<td>-</td>
+				<td>{{item.address.street}}</td>
+				<td>{{item.address.location}}</td>
+				<td>{{item.address.city}}</td>
+				<td>{{item.address.state}}</td>
+				<td>{{item.address.pin}}</td>
+				<td><button class="btn btn-danger"
+	(click)="deleteUser(item._id)">Delete</button></td>
+				
+			</tr>
+		</table>
+		<div  *ngIf="response && response.msg != ''">
+		<h2>Users are not available</h2>
+		</div>
+	</div>
+	
+</div>
+
